@@ -30,7 +30,22 @@ describe "git-export" do
     expect(json).to eq "{\n  \"global\": {\n    \"section.subsection.more.somekey\": \"some value\"\n  }\n}"
   end
   
-  it "supports multi-line values" do
-  
+  it "ignores comments on their own line" do
+    file = "[user]\n\t; This is my username\n\tname = John Smith"
+    json = Git::Export.export(file)
+    expect(json).to eq "{\n  \"global\": {\n    \"user.name\": \"John Smith\"\n  }\n}"
   end
+  
+  it "ignores blank lines" do
+    file = "[user]\n\t\n\n\n\tname = John Smith"
+    json = Git::Export.export(file)
+    expect(json).to eq "{\n  \"global\": {\n    \"user.name\": \"John Smith\"\n  }\n}"
+  end
+  
+  it "supports multi-line values" do
+    file = "[user]\n\tname = John\\\n\tSmith\n"
+    json = Git::Export.export(file)
+    expect(json).to eq("{\n  \"global\": {\n    \"user.name\": \"John\\tSmith\"\n  }\n}")
+  end
+  it "ignores comments at the end of lines"
 end
