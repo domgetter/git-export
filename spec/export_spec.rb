@@ -17,4 +17,20 @@ describe "git-export" do
     json = Git::Export.export(file)
     expect(json).to eq "{\n  \"global\": {\n    \"user.name\": \"John Smith\",\n    \"alias.c\": \"commit -m\"\n  }\n}"
   end
+  
+  it "supports sections with sub-sections" do
+    file = "[section \"subsection\"]\n\tsomekey = some value"
+    json = Git::Export.export(file)
+    expect(json).to eq "{\n  \"global\": {\n    \"section.subsection.somekey\": \"some value\"\n  }\n}"
+  end
+  
+  it "supports sections with sub-sub-sections" do
+    file = "[section \"subsection.more\"]\n\tsomekey = some value"
+    json = Git::Export.export(file)
+    expect(json).to eq "{\n  \"global\": {\n    \"section.subsection.more.somekey\": \"some value\"\n  }\n}"
+  end
+  
+  it "supports multi-line values" do
+  
+  end
 end

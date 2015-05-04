@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'json'
+#require 'pry'
 
 module Git
   class Export
@@ -28,7 +29,11 @@ module Git
     end
     
     def self.section_name_from(line)
-      line.strip.match(/^\[([^\]]+)\]$/)[1]
+      m = line.strip.match(/^\[(([^\]"]+)( "([^"]+)")?)\]$/)
+      output = m[2]
+      output += "." if m[4]
+      output += m[4].to_s
+      return output
     end
     
     def self.key_value_pair?(line)
